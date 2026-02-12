@@ -1,0 +1,25 @@
+name: Unzip auth_info on push
+
+on:
+  push:
+    paths:
+      - 'auth_info.zip'
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unzip auth_info
+        run: |
+          unzip auth_info.zip -d auth_info
+          rm auth_info.zip   # optional: remove zip after unzip
+
+      - name: Commit unzipped files
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add auth_info/
+          git commit -m "Unzipped auth_info from zip" || echo "No changes"
+          git push
